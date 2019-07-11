@@ -17,10 +17,10 @@ script:
   # require the branch name to be master (note for PRs this is the base branch name)
   if: env(tf_plan) = destroy
   script:
-    - cd ${TRAVIS_BUILD_DIR}/; terraform destroy
+    - /usr/local/bin/terraform destroy
 
 - stage: apply
   # require the branch name to be master (note for PRs this is the base branch name)
   if: env(tf_plan) = apply
   script:
-    - cd ${TRAVIS_BUILD_DIR}/; terraform apply
+    - /usr/local/bin/terraform apply
