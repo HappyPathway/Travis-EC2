@@ -13,14 +13,18 @@ script:
 - cd ${TRAVIS_BUILD_DIR}/; terraform validate || exit 1
 - cd ${TRAVIS_BUILD_DIR}/; terraform fmt || exit 1
 
-- stage: destroy
-  # require the branch name to be master (note for PRs this is the base branch name)
-  if: env(tf_plan) = destroy
-  script:
-    - /usr/local/bin/terraform destroy
+after_script:
+  # deploy develop to the staging environment
+  - provider: script
+    if: env(tf_plan) = destroy
+    script: 
+    - bash ./tf.sh default destroy
+    on:
+      branch: master
 
-- stage: apply
-  # require the branch name to be master (note for PRs this is the base branch name)
-  if: env(tf_plan) = apply
-  script:
-    - /usr/local/bin/terraform apply
+  - provider: script
+    if: env(tf_plan) = apply
+    script: 
+    - bash ./tf.sh default apply
+    on:
+      branch: master
