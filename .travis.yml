@@ -7,11 +7,16 @@ env:
 sudo: required
 language: bash
 before_install:
-- wget https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip -O /tmp/terraform.zip
+- openssl aes-256-cbc -K $encrypted_77dff6ce93e8_key -iv $encrypted_77dff6ce93e8_iv
+  -in .tf_modules.enc -out .tf_modules -d
+- wget https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip
+  -O /tmp/terraform.zip
 - sudo unzip -d /usr/local/bin/ /tmp/terraform.zip
 script:
 - cd ${TRAVIS_BUILD_DIR}/; terraform init || exit 1
 - cd ${TRAVIS_BUILD_DIR}/; terraform validate || exit 1
 - cd ${TRAVIS_BUILD_DIR}/; terraform fmt || exit 1
-- cd ${TRAVIS_BUILD_DIR}/; if [ "${tf_plan}" = "apply" ]; then terraform apply -auto-approve; fi
-- cd ${TRAVIS_BUILD_DIR}/; if [ "${tf_plan}" = "destroy" ]; then terraform destroy -force; fi
+- cd ${TRAVIS_BUILD_DIR}/; if [ "${tf_plan}" = "apply" ]; then terraform apply -auto-approve;
+  fi
+- cd ${TRAVIS_BUILD_DIR}/; if [ "${tf_plan}" = "destroy" ]; then terraform destroy
+  -force; fi

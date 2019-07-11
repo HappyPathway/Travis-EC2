@@ -1,30 +1,37 @@
-# Create a new instance of the latest Ubuntu 14.04 on an
-# t2.micro node with an AWS Tag naming it "HelloWorld"
-provider "aws" {
-  region = "us-west-2"
+module "vpc" {
+  source         = "git@github.com:FoghornConsulting/m-vpc.git"
+  # version        = "v0.2.9"
+  tag_costcenter = "dave@foghornconsulting.com"
+  tag_customer   = "DuMB"
+
+  subnet_map {
+    public   = "3"
+    private  = "3"
+    isolated = 0
+  }
 }
 
-data "aws_ami" "ubuntu" {
-  most_recent = true
+module "layer2" {
+  #source = "git@github.com:FoghornConsulting/m-layer2.git"
+  #version = "v0.1.9"
+  source = "git@github.com:FoghornConsulting/m-layer2.git"
 
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical
-}
-
-resource "aws_instance" "web" {
-  ami           = "${data.aws_ami.ubuntu.id}"
-  instance_type = "m4.large"
-
-  tags = {
-    Name = "TravisCI"
-  }
+  tag_costcenter    = "dave@foghornconsulting.com"
+  tag_customer      = "DuMB"
+  vpc_id            = "${module.vpc.id}"
+  sg_allhosts       = "${module.vpc.sg_allhosts}"
+  subnets_elb       = "${module.vpc.subnets_public}"
+  subnets_instances = "${module.vpc.subnets_private}"
+  r53_zone_name     = "superscalability.com."
+  r53_domain        = "wordpress.superscalability.com."
+  acm_domain        = "*.superscalability.com"
+  tag_application   = "wordpress"
+  tag_environment   = "coe"
+  tag_name          = "coe-Darnold"
+  enable_r53        = true
+  append_script = "${data.template_file.user_data.rendered}"
+  asg_min = 1
+  asg_max = 1
+  asg_desired = 1
+  key_name = "darnold"
 }
