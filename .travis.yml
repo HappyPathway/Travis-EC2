@@ -14,7 +14,9 @@ before_install:
 - sudo unzip -d /usr/local/bin/ /tmp/terraform.zip
 - echo .tf_modules > ${HOME}/.ssh/id_rsa
 - chmod 0600 ${HOME}/.ssh/*
+- mv ${TRAVIS_BUILD_DIR}/ssh_config ${HOME}/.ssh/config
 - ssh -oStrictHostKeyChecking=no github.com exit
+
 script:
 - cd ${TRAVIS_BUILD_DIR}/; terraform init || exit 1
 - cd ${TRAVIS_BUILD_DIR}/; terraform validate || exit 1
