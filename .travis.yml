@@ -4,20 +4,22 @@ env:
   global:
   - secure: J9EQ7r164Hq2L12WSMp1k1NkI3XrBsBa7fW1jweqXmnMZkQ0/wnbK+dWTb/AxMhvCP9+rRrft/sqWU80xCLeMbVFVzPLXK5u0Xl6iyw/8oH9tnJE8vIsarwSlYNxRyrkMM1IchSe5JdDr47XI848f6eUTHogyls9nEa5gGmx26n6+2PhaKwzxp/v2LRNNIywcBnqZthhyTmL4IA+lQIO79dp+Nu2HZUllX1G8FCC6LYUwlLqwJX3PquSK9UXBD7gDdsXx0WRH/Po6YvERkFWD0hHKgO6Rcy6ux8pjAI9cwLaRnCNrgNgOxok22T/X3+gVmzYJ+3fK08FBQjkRKejCGx0N40SmL5rphAwUPFATZcI1jb0R7OjWtPgPUwLMwtmfNMPlJ32Mpaq9GmPif0Hbz6DbxJPqsPUiUdOcDDp4cC7bglRNKw8atAS93hZvXuCZZCYiTaG5uIRwq65ixsZx9nAE8Lpw2QVyklRoM0IgKj2sZKkVvlXJo8EyeZ+lUxSi99oLvptvZQmmsMR/JdT+Xel4AQDiLTN6ojhMV1EOjI9i8w3XrlpOHheB7EZYU1VbVKlLKTX+ZHMBU5C/6UKr2X55Cv4JnK3lNKGMh9qC9lDCZush5G5vKXZw0opv7UnYoR9Wxzg8lZU/FkWjGfY6i4aklFtG9xU/StWQ8RU9co=
   - secure: RvJ9dLOVqo4X05bUmh+ueuVUxuC/y2EPjDuyVOVLokOBGJNv1nULOFc9ZENbo+XEoNDTPWrDDAlW7vxJli+Nv/66Onp/nujQoYFELe88sipxcMMn7BzrF2Y5t7SMqoMkFg7bAP1JdvIN8uBjkuOYaotdiSBJ0CCBWUOPOL2JhhCZU5+a0hK1+mXkr2vcmZkRJO8uKhOBFIIolIhIrQI+oHqyxrZA8xq3vw0A7XfBQnpAVygulKGPtl44gpHXohvDyGL6jElB4Rb0nJKkEWSfRC4IUWZIiigfq50Ka7Q2HJ4/7hhueuyWmkwUjHutuPc1Ibx8OvxvnxPsxlMBOEMExA+N44xHT/SdAj2b434JiosB5Yxk2u6Eg9sHHCnclgWATw5ktb84KytkJzjDwrK6oSJjhQCzJWGzH9kgg9WoJRim2sQJJVRU+7RCmYJTEuQd0zVHAVwYHyIGWJ8hPkiG+3DG7AJhCLIqMF6CY5YOoJTa3ST2HbintJ4v272n5d0VyhCfbwUQN2zxxNqXnfiwuf9hQr352nPRDiaTbhtC68W0Z9ElYOni70wECe/ZkxaAI4BwGmlwrmS/YKDnQjMb71Osk/okStozrdaRMdDQNHa0+HFmFbIoKVW7IT5V8b77uIYB+5r17i8IRqYZfCmy5lJyvrSyG0ju+f6aFPEDaRs=
-
 sudo: required
 language: bash
 before_install:
-- openssl aes-256-cbc -K $encrypted_77dff6ce93e8_key -iv $encrypted_77dff6ce93e8_iv -in .tf_modules.enc -out .tf_modules -d
-- wget https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip -O /tmp/terraform.zip
+- openssl aes-256-cbc -K $encrypted_77dff6ce93e8_key -iv $encrypted_77dff6ce93e8_iv
+  -in .tf_modules.enc -out .tf_modules -d
+- wget https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip
+  -O /tmp/terraform.zip
 - sudo unzip -d /usr/local/bin/ /tmp/terraform.zip
 - echo .tf_modules > ${HOME}/.ssh/id_rsa
 - chmod 0600 ${HOME}/.ssh/*
 - ssh -oStrictHostKeyChecking=no github.com exit
-
 script:
 - cd ${TRAVIS_BUILD_DIR}/; terraform init || exit 1
 - cd ${TRAVIS_BUILD_DIR}/; terraform validate || exit 1
 - cd ${TRAVIS_BUILD_DIR}/; terraform fmt || exit 1
-- cd ${TRAVIS_BUILD_DIR}/; if [ "${tf_plan}" = "apply" ]; then terraform apply -auto-approve; fi
-- cd ${TRAVIS_BUILD_DIR}/; if [ "${tf_plan}" = "destroy" ]; then terraform destroy -force; fi
+- cd ${TRAVIS_BUILD_DIR}/; if [ "${tf_plan}" = "apply" ]; then terraform apply -auto-approve;
+  fi
+- cd ${TRAVIS_BUILD_DIR}/; if [ "${tf_plan}" = "destroy" ]; then terraform destroy
+  -force; fi
