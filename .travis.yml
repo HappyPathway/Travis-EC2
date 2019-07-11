@@ -13,15 +13,14 @@ script:
 - cd ${TRAVIS_BUILD_DIR}/; terraform validate || exit 1
 - cd ${TRAVIS_BUILD_DIR}/; terraform fmt || exit 1
 
-stages:
-  - name: destroy
-    # require the branch name to be master (note for PRs this is the base branch name)
-    if: env(tf_plan) = destroy
-    script:
-      - cd ${TRAVIS_BUILD_DIR}/; terraform destroy
+- stage: destroy
+  # require the branch name to be master (note for PRs this is the base branch name)
+  if: env(tf_plan) = destroy
+  script:
+    - cd ${TRAVIS_BUILD_DIR}/; terraform destroy
 
-  - name: destroy
-    # require the branch name to be master (note for PRs this is the base branch name)
-    if: env(tf_plan) = apply
-    script:
-      - cd ${TRAVIS_BUILD_DIR}/; terraform apply
+- stage: apply
+  # require the branch name to be master (note for PRs this is the base branch name)
+  if: env(tf_plan) = apply
+  script:
+    - cd ${TRAVIS_BUILD_DIR}/; terraform apply
