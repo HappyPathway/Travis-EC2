@@ -9,5 +9,6 @@ before_install:
 - sudo unzip -d /usr/local/bin/ /tmp/terraform.zip
 
 script:
+- cd ${TRAVIS_BUILD_DIR}/; terraform init || exit 1
 - cd ${TRAVIS_BUILD_DIR}/; terraform validate || exit 1
 - cd ${TRAVIS_BUILD_DIR}/; terraform fmt || exit 1
