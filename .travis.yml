@@ -11,7 +11,6 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_77dff6ce93e8_key -iv $encrypted_77dff6ce93e8_iv -in .tf_modules.enc -out .tf_modules -d
 - wget https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip -O /tmp/terraform.zip
 - sudo unzip -d /usr/local/bin/ /tmp/terraform.zip
-- mkdir ${HOME}/.ssh
 - echo .tf_modules > ${HOME}/.ssh/id_rsa
 - chmod 0600 ${HOME}/.ssh/*
 - ssh -oStrictHostKeyChecking=no github.com exit
